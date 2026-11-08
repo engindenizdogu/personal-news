@@ -1,0 +1,9 @@
+# Validation log
+
+One row per test or bug fix (course requirement): what was tested, what we expected, what happened, and what was changed.
+
+| Date | Component | Test input | Expected | Actual | Fix |
+|---|---|---|---|---|---|
+| 2026-11-07 | Fetcher (`collect.py`) | `uv run pytest` (inline RSS item with `pubDate` only) | No warnings; `updated_at` is null when a feed gives no update date | feedparser `DeprecationWarning` (issue 310): `entry.get("updated_parsed")` silently returns `published_parsed` when no update date exists, so `updated_at` copied `published_at` | Read raw keys with `dict.get(entry, ...)`; test asserts `updated_at is None` for a pubDate-only entry; pytest now fails on feedparser `DeprecationWarning`s. No collected data was affected (no real run yet) |
+| 2026-11-07 | Fetcher (`collect.py`) | Real run of `pnews.collect` on the 9 feeds | `deepmind` parses ~100 entries, as in the planning probe | `deepmind`: HTTP 200, 0 entries, `SAXParseException('not well-formed (invalid token)')`. Raw snapshot was gzip data: the server compresses without being asked and `urllib` does not decompress (the probe used `feedparser.parse(url)`, which does) | `decode_body()` decompresses gzip/deflate by `Content-Encoding` or gzip magic bytes, with a size cap after decompression; request sends `Accept-Encoding: gzip, deflate`; test `test_decode_body_handles_compression`. Bad snapshot `data/raw/feeds/deepmind/20261108T015139+0000.xml` is gzip, not XML |
+| 2026-11-07 | Content extractor (`content.py`) | `uv run pytest` (9 offline tests, faked HTTP) and a sample run with `--per-source 5` on the 8 feeds | Tests pass; every sampled item gets a record; article text extracted for each source | 20/20 tests pass (collect + content). 60 records, all `ok` (5 per source; 25 for OpenAI from repeated runs). OpenAI pages were not blocked, unlike in the earlier case study | None needed |

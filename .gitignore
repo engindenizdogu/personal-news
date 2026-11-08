@@ -1,0 +1,38 @@
+# Python / uv
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+dist/
+build/
+
+# Secrets (ANTHROPIC_API_KEY comes from the environment)
+.env
+.env.*
+
+# Editors / OS
+.DS_Store
+.obsidian/
+# Office lock files
+~$*
+.vscode/
+.idea/
+
+# Notebooks
+.ipynb_checkpoints/
+
+# Data: commit what reproduction needs, keep raw feed bodies and derived artifacts out.
+# See "Open questions" in PROJECT_PLAN.md; adjust once decided.
+data/raw/
+# Full article text (pnews.content): kept out of git, like raw HTML.
+data/content.jsonl
+# data/items.jsonl is committed: feeds roll over, so a fresh clone cannot re-fetch history.
+data/embeddings/
+data/graphs/
+data/results/
+!data/.gitkeep
+
+# Obsidian
+.obsidian/

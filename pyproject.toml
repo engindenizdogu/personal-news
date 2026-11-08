@@ -1,0 +1,29 @@
+[project]
+name = "pnews"
+version = "0.1.0"
+description = "EM 626 course project: learning a reader's news relevance from their ratings with graph models."
+authors = [
+    { name = "Engin Deniz Dogu", email = "denizdou@outlook.com" }
+]
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "feedparser>=6.0.14",
+    "matplotlib>=3.11.2",
+    "pandas>=3.1.1",
+    "pyyaml>=6.0.3",
+    "trafilatura>=2.3.1",
+]
+
+[build-system]
+requires = ["uv_build>=0.9.26,<0.10.0"]
+build-backend = "uv_build"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+# Fail on feedparser's issue-310 fallback warning: it means we read a remapped date key.
+filterwarnings = ["error::DeprecationWarning:feedparser"]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.2.0",
+]

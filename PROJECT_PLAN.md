@@ -2,7 +2,7 @@
 
 A smaller, course-sized version of personal-news that tests the **recommendation** part of the product: can a graph model learn what one reader finds relevant from their ratings alone?
 
-Course: EM 626 AI/ML for Systems (Stevens). Author: Engin Deniz Dogu (solo). Proposal: `EM626-Project Draft.docx`.
+Course: EM 626 AI/ML for Systems (Stevens). Author: Engin Deniz Dogu (solo). Proposal: `docs/Project Proposal.docx`.
 
 ## Research question
 Does graph structure improve relevance prediction over item text alone, using only the reader's ratings (no profile or personal information)?
@@ -47,23 +47,26 @@ Does graph structure improve relevance prediction over item text alone, using on
 Today is Friday, November 6. Dates are Monday–Sunday weeks.
 
 ### Weekend setup: Sat Nov 7 – Sun Nov 8 (midterm prep)
-- [ ] Repo setup: `git init`, `uv` project, `.gitignore`, folder layout (see `CLAUDE.md`)
-- [ ] Pick 5–10 feeds; check how many items each feed exposes
-- [ ] Fetcher + backfill → `data/items.jsonl`
-- [ ] Enrichment prompt, JSON schema and validator; run on a sample, then all items
-- [ ] Draft topic list from free-form tags
+- [x] Repo setup: `git init`, `uv` project, `.gitignore`, folder layout (see `CLAUDE.md`)
+- [x] Pick 5–10 feeds; check how many items each feed exposes. 8 feeds in `config/feeds.yml`; Hacker News and Business Insider dropped
+- [x] Fetcher → `data/items.jsonl` (`pnews.collect`). No separate backfill: history is what each feed exposes, filtered to items published since 2026-01-01 (`--since 2026`); Wayback backfill considered and not built
+- [x] Article text with trafilatura → `data/content.jsonl` (`pnews.content`): sample of 5+ items per source for the midterm graph
+- [ ] Enrichment prompt, JSON schema and validator: entities on the content sample (free-form tagging and post types moved to week 1)
 - [ ] Graph builder v0 and statistics (nodes, edges, degree distribution, a plot)
-- [ ] Pipeline diagram
+- [x] Pipeline diagram (`report/midterm.md`)
 - [ ] Status note: next steps, where labels come from, baselines, metrics
 
 ### Midterm presentation: Mon Nov 9
 Deliverables required by the course:
-- [ ] Pipeline diagram (LLM components, graph construction, graph model, evaluation)
+- [x] Pipeline diagram (LLM components, graph construction, graph model, evaluation)
 - [ ] Preliminary LLM-generated components (fetcher, enrichment extractor)
 - [ ] First version of the graph (partial is fine) with basic statistics
 - [ ] Status note: next steps, label source, baselines, evaluation metrics
 
 ### Week 1: Nov 9 – Nov 15 (data and labels)
+- [ ] Article text for all items (`pnews.content`); review coverage per source
+- [ ] Free-form tagging; draft the topic list from the tags
+- [ ] Post types: decide whether to keep them (item feature, not a graph node) and fix the closed list
 - [ ] Freeze the topic list; re-run enrichment with it
 - [ ] Rating form (Streamlit); start rating, target 150+ items by Sunday
 - [ ] Daily fetch running
@@ -84,7 +87,7 @@ Deliverables required by the course:
 
 ### Week 4: Nov 30 – Dec 6 (integration and feedback)
 - [ ] Digest note with a grounding check
-- [ ] One end-to-end script from raw feeds to final outputs
+- [ ] One end-to-end script from raw feeds to final outputs. Development stays modular in `src/pnews/`; at the end, build one final file (notebook or bundled `.py`) that runs every stage and ships with `config/`, the enrichment cache and ratings. Confirm the expected format with the professor
 - [ ] README with reproduction steps and fixed seeds
 - [ ] Stretch, only if everything above is done: LLM judge (zero-shot)
 
@@ -127,4 +130,4 @@ Deliverables required by the course:
 
 ## Open questions
 - Report due date: with the presentation on Dec 14, or later?
-- Commit data to git? Proposal: commit `config/`, ratings and the enrichment cache (small, needed for reproduction); keep raw feed bodies out.
+- ~~Commit data to git?~~ Decided Nov 7: commit `config/`, `data/items.jsonl`, ratings and the enrichment cache (feeds roll over, so a fresh clone cannot re-fetch history). Derived artifacts (embeddings, graphs, results) stay out.

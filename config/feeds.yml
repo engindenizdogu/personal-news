@@ -1,0 +1,13 @@
+# RSS/Atom feeds for the course project (5–10, chosen by hand).
+# id: short slug, used as the source node key in the graph. Never change it after collection starts.
+# name: display name shown in the rating form.
+# url: feed URL (must return 200 and parse with feedparser).
+feeds:
+  - {id: openai, name: OpenAI News, url: "https://openai.com/news/rss.xml"}
+  - {id: pragmatic_engineer, name: The Pragmatic Engineer, url: "https://blog.pragmaticengineer.com/rss/"}
+  - {id: stripe, name: Stripe Blog, url: "https://stripe.com/blog/feed.rss"}
+  - {id: cloudflare, name: Cloudflare Blog, url: "https://blog.cloudflare.com/rss/"}
+  - {id: deepmind, name: Google DeepMind Blog, url: "https://deepmind.google/blog/rss.xml"}
+  - {id: bbc_us_canada, name: BBC News US & Canada, url: "https://feeds.bbci.co.uk/news/world/us_and_canada/rss.xml"}
+  - {id: coding_horror, name: Coding Horror, url: "https://blog.codinghorror.com/rss/"}
+  - {id: nature, name: Nature, url: "https://www.nature.com/nature.rss"}
