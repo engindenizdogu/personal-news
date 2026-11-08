@@ -1,0 +1,34 @@
+# LLM enrichment settings (pnews.enrich). The API key OPENROUTER_API_KEY comes from .env
+# (see .env.example) or the environment, never from this file.
+
+provider: openrouter
+api_url: https://openrouter.ai/api/v1/chat/completions
+
+# Paid OpenRouter model (free models were too slow or rate-limited). About $0.0004 per item.
+# Changing the model changes the cache key, so cached outputs from another model are not reused.
+model: z-ai/glm-5.3-flash
+
+# Runtime prompt (versioned file in prompts/). The version is stored with every output.
+prompt_file: prompts/entities_v1.md
+prompt_version: entities_v1
+
+temperature: 0
+seed: 626                # passed to the API; providers that support it give more repeatable output
+max_tokens: 10000         # covers reasoning + answer; at 2000 a long input spent everything on reasoning
+json_mode: true          # send response_format={"type": "json_object"} (the model must support it)
+
+# Reasoning models think before answering. Extraction needs little of it; "low" keeps
+# answers from running out of tokens. Sent as OpenRouter's `reasoning` parameter.
+reasoning:
+  effort: low
+
+# OpenRouter provider routing, sent as the `provider` request field. require_parameters:
+# only use providers that honor every parameter we send (seed, response_format, reasoning),
+# so the same model is not silently served without them.
+routing:
+  require_parameters: true
+
+max_input_words: 2500    # article text is cut to this many words before sending
+min_interval_s: 4        # spacing between requests (needed for free models; harmless otherwise)
+max_rate_limit_retries: 5
+request_timeout_s: 120

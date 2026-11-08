@@ -1,0 +1,160 @@
+{
+  "nodes": {
+    "item": 45,
+    "source": 9,
+    "entity": 726,
+    "total": 780
+  },
+  "edges": {
+    "from": 45,
+    "mentions": 857,
+    "total_undirected": 902
+  },
+  "min_entity_items": 1,
+  "items_per_source": {
+    "bbc_us_canada": 5,
+    "cloudflare": 5,
+    "coding_horror": 5,
+    "deepmind": 5,
+    "hackernoon": 5,
+    "nature": 5,
+    "openai": 5,
+    "pragmatic_engineer": 5,
+    "stripe": 5
+  },
+  "entities_by_type": {
+    "location": 64,
+    "organization": 136,
+    "person": 276,
+    "product": 250
+  },
+  "entity_degree": {
+    "min": 1,
+    "median": 1.0,
+    "mean": 1.18,
+    "max": 10,
+    "histogram": {
+      "1": 654,
+      "2": 48,
+      "3": 10,
+      "4": 7,
+      "5": 1,
+      "6": 3,
+      "7": 1,
+      "9": 1,
+      "10": 1
+    },
+    "singletons": 654,
+    "multi_source": 25
+  },
+  "item_degree": {
+    "min": 0,
+    "median": 12,
+    "mean": 19.04,
+    "max": 185,
+    "items_without_entities": 1
+  },
+  "item_links_via_entities": {
+    "item_pairs": 164,
+    "cross_source_pairs": 107,
+    "items_with_a_link": 39,
+    "components": 8,
+    "largest_component": 37
+  },
+  "full_graph": {
+    "connected_components": 2,
+    "density": 0.00297
+  },
+  "top_entities": [
+    {
+      "name": "United States",
+      "type": "location",
+      "items": 10,
+      "sources": 5
+    },
+    {
+      "name": "OpenAI",
+      "type": "organization",
+      "items": 9,
+      "sources": 3
+    },
+    {
+      "name": "Stripe",
+      "type": "organization",
+      "items": 7,
+      "sources": 2
+    },
+    {
+      "name": "Anthropic",
+      "type": "organization",
+      "items": 6,
+      "sources": 2
+    },
+    {
+      "name": "Cloudflare",
+      "type": "organization",
+      "items": 6,
+      "sources": 2
+    },
+    {
+      "name": "Meta",
+      "type": "organization",
+      "items": 6,
+      "sources": 4
+    },
+    {
+      "name": "Google",
+      "type": "organization",
+      "items": 5,
+      "sources": 2
+    },
+    {
+      "name": "United Kingdom",
+      "type": "location",
+      "items": 4,
+      "sources": 3
+    },
+    {
+      "name": "Washington",
+      "type": "location",
+      "items": 4,
+      "sources": 1
+    },
+    {
+      "name": "Nature",
+      "type": "organization",
+      "items": 4,
+      "sources": 1
+    },
+    {
+      "name": "Republican Party",
+      "type": "organization",
+      "items": 4,
+      "sources": 1
+    },
+    {
+      "name": "Donald Trump",
+      "type": "person",
+      "items": 4,
+      "sources": 1
+    },
+    {
+      "name": "The Pulse",
+      "type": "product",
+      "items": 4,
+      "sources": 1
+    },
+    {
+      "name": "X",
+      "type": "product",
+      "items": 4,
+      "sources": 2
+    },
+    {
+      "name": "China",
+      "type": "location",
+      "items": 3,
+      "sources": 2
+    }
+  ]
+}

@@ -11,3 +11,4 @@ feeds:
   - {id: bbc_us_canada, name: BBC News US & Canada, url: "https://feeds.bbci.co.uk/news/world/us_and_canada/rss.xml"}
   - {id: coding_horror, name: Coding Horror, url: "https://blog.codinghorror.com/rss/"}
   - {id: nature, name: Nature, url: "https://www.nature.com/nature.rss"}
+  - {id: hackernoon, name: HackerNoon, url: "https://hackernoon.com/feed"}

@@ -11,6 +11,8 @@ Runtime prompts used by the pipeline (e.g. `enrich_v1.md`) are separate files in
 | Feed list | `config/feeds.yml` | Mixed | Feeds chosen by the author; file written by the LLM; Hacker News removed by the author |
 | Fetcher (collect) | `src/pnews/collect.py`, `tests/test_collect.py`, pytest config in `pyproject.toml` | LLM-generated | Bug fix for feedparser date fallback after the author's test run |
 | Content extractor | `src/pnews/content.py`, `tests/test_content.py` | LLM-generated | trafilatura on each item's link; not yet run by the author |
+| Entity extraction (enrich) | `src/pnews/enrich.py`, `tests/test_enrich.py`, `config/enrich.yml`, `config/entity_aliases.yml` | LLM-generated | Runtime prompt `prompts/entities_v1.md` also LLM-drafted; entity types chosen by the author |
+| Graph builder (graph) | `src/pnews/graph.py`, `tests/test_graph.py`, `config/graph.yml` | LLM-generated | v0: items, sources, entities; statistics, two figures, GEXF export |
 
 Origin is one of: LLM-generated, handwritten, mixed.
 
@@ -88,3 +90,66 @@ Origin is one of: LLM-generated, handwritten, mixed.
 - **Prompt (verbatim):**
   > For now let's not focus on that. We now have 5 item content per source, that should be enough to begin working on the graph. Next week, we'll get more. We can also do the tagging part next week too. Update the plan and commit/push.
 - **Files changed:** `PROJECT_PLAN.md` (ticked feeds, fetcher and content sample; tagging, topic list and post types moved to week 1; proposal file name), `.gitignore` (`.obsidian/`, Office lock files), `VALIDATION_LOG.md`
+
+### 2026-11-07 · Entity extraction: design discussion
+- **Model:** Claude Opus 5.5 (`claude-opus-5-5`) via Claude Code
+- **Prompt (verbatim):**
+  > Yes, let's discuss entity extraction. What kind of entities could we extract?
+- **Files changed:** none (discussion: candidate entity types, what to return per entity, normalization)
+
+### 2026-11-07 · Entity extraction (enrich) via OpenRouter
+- **Model:** Claude Opus 5.5 (`claude-opus-5-5`) via Claude Code
+- **Prompt (verbatim):**
+  > 1. 4 types are good, product should not be limited to tech
+  > 2. No to both. If we need it we'll add it later on.
+  > 3. For now, no.
+  >
+  > I'll use OpenRouter to access free models, so implement accordingly.
+- **Context:** answers to the questions above: types organization/person/product/location; no `central` flag and no per-item cap; keep the publisher's own name. The model default (`google/gemma-4-31b-it:free`) was picked by the LLM from OpenRouter's public model list (free, supports `seed` and JSON mode).
+- **Files produced/changed:** `src/pnews/enrich.py`, `tests/test_enrich.py`, `prompts/entities_v1.md` (runtime prompt), `config/enrich.yml`, `config/entity_aliases.yml`, `README.md`, `CLAUDE.md` (LLM stack: OpenRouter instead of the Anthropic SDK)
+
+### 2026-11-07 · Enrich: API key from `.env`
+- **Model:** Claude Opus 5.5 (`claude-opus-5-5`) via Claude Code
+- **Prompt (verbatim):**
+  > Update this part to use an .env file. I'll update the example.
+- **Context:** the selected lines were the `export OPENROUTER_API_KEY=...` usage line in `src/pnews/enrich.py`.
+- **Files changed:** `src/pnews/enrich.py` (`get_api_key`, `--env-file`), `tests/test_enrich.py` (3 tests), `.env.example` (new), `.gitignore` (keep `.env.example`), `pyproject.toml`/`uv.lock` (`python-dotenv`), `README.md`, `CLAUDE.md`
+
+### 2026-11-08 · Review of the first 5 enrichment results; normalization fix
+- **Model:** Claude Opus 5.5 (`claude-opus-5-5`) via Claude Code
+- **Prompt (verbatim):**
+  > I switched to 'z-ai/glm-5.3-flash'. Free models are either too slow or rate limited. Review the first 5 results.
+- **Files changed:** `src/pnews/enrich.py` (dash/quote folding; periods kept inside numbers), `tests/test_enrich.py` (one test), `VALIDATION_LOG.md`, `data/enrichment/entities.jsonl` (rebuilt from cache with `--limit 0`)
+- **Incident:** while applying the fix, a chained shell command (`pytest && python -m pnews.enrich`) ran enrichment without `--limit` after the edit step had failed. It made 13 unrequested API calls (5 pragmatic_engineer, 5 stripe, 3 cloudflare items; $0.0078) before it was stopped. Answers are cached and valid, so they are kept.
+
+### 2026-11-08 · Enrich: reasoning effort, max tokens, provider routing, finish_reason
+- **Model:** Claude Opus 5.5 (`claude-opus-5-5`) via Claude Code
+- **Prompt (verbatim):**
+  > Ok, do it. You can increase max tokens even more.
+- **Context:** approves the proposals from the review: low reasoning effort, higher `max_tokens`, `require_parameters` routing, storing `finish_reason`.
+- **Files changed:** `config/enrich.yml` (`max_tokens` 8000, `reasoning`, `routing`, comments), `src/pnews/enrich.py` (send `reasoning` and `provider`; both in the cache key; store `finish_reason`; cut-off answers invalid; summary line), `tests/test_enrich.py` (2 tests + hash assertion), `README.md`, `VALIDATION_LOG.md`
+
+### 2026-11-08 · HackerNoon text source (question)
+- **Model:** Claude Opus 5.5 (`claude-opus-5-5`) via Claude Code
+- **Prompt (verbatim):**
+  > does the enrich step skip these?
+- **Files changed:** none (answer: robots-disallowed HackerNoon items fall back to title + feed summary)
+
+### 2026-11-08 · Graph builder v0
+- **Model:** Claude Opus 5.5 (`claude-opus-5-5`) via Claude Code
+- **Prompt (verbatim):**
+  > I'll keep option 1 for now. Results are here. We can start working on the graph.
+- **Files produced/changed:** `src/pnews/graph.py`, `tests/test_graph.py`, `config/graph.yml`, `pyproject.toml`/`uv.lock` (`torch`, `torch-geometric`, `networkx`), `report/tables/graph_v0_stats.{md,json}`, `report/figures/graph_v0_{degree,network}.png`, `README.md`, `CLAUDE.md`, `PROJECT_PLAN.md`, `VALIDATION_LOG.md`
+- **Note:** the summary-only counter for enrichment (suggested with option 1) was not added.
+
+### 2026-11-08 · Interactive graph browsing (question)
+- **Model:** Claude Opus 5.5 (`claude-opus-5-5`) via Claude Code
+- **Prompt (verbatim):**
+  > Does networkx have an interactive component where I can browse the graph (for example in a browser or gephi)
+- **Files changed:** none (answer: export to GEXF/GraphML for Gephi or Gephi Lite; pyvis or ipysigma for HTML/Jupyter)
+
+### 2026-11-08 · Graph builder: GEXF export
+- **Model:** Claude Opus 5.5 (`claude-opus-5-5`) via Claude Code
+- **Prompt (verbatim):**
+  > Create a gexf file too. I'll upload it to gephi lite.
+- **Files changed:** `src/pnews/graph.py` (`to_networkx`, `export_gexf`; item url in node table), `tests/test_graph.py` (round-trip test), `pyproject.toml`/`uv.lock` (`scipy`), `README.md`, `CLAUDE.md`, `VALIDATION_LOG.md`

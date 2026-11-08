@@ -10,7 +10,7 @@ Right now the repo hosts the **EM 626 course project**, a course-sized version t
 ## Stack
 - Python 3.12, managed with `uv` (`uv add`, `uv run`). No global installs.
 - `feedparser` for feeds; `sentence-transformers` for embeddings; PyTorch + PyTorch Geometric for graph models; `networkx` for graph statistics; `scikit-learn` for baselines; Streamlit for the rating form.
-- LLM for enrichment and the digest note: Claude via the Anthropic SDK, a small model (`claude-haiku-5-5`). The API key comes from the `ANTHROPIC_API_KEY` environment variable, never from the repo.
+- LLM for enrichment and the digest note: free models via [OpenRouter](https://openrouter.ai) (OpenAI-compatible chat completions API, called with the standard library). Model and settings in `config/enrich.yml`. The API key `OPENROUTER_API_KEY` is read from `.env` (git-ignored; template in `.env.example`) or the environment, never committed.
 
 ## Layout
 ```
@@ -32,6 +32,8 @@ VALIDATION_LOG.md
 - `uv run pytest`: run tests
 - `uv run python -m pnews.collect`: fetch all feeds in `config/feeds.yml`, append new items to `data/items.jsonl`, save raw XML to `data/raw/feeds/` (`--no-raw` to skip; `--since 2026` keeps only items published on/after that date and drops undated ones)
 - `uv run python -m pnews.content`: fetch each item's page, extract text with trafilatura, append to `data/content.jsonl` keyed by `item_id` (`--limit N`, `--per-source N`, `--source ID`, `--retry-failed`, `--no-html`); failed items get a row with `text: null`; only sources in `config/feeds.yml`
+- `uv run python -m pnews.enrich`: extract entities with the LLM for items that have a content record; raw answers cached in `data/enrichment/cache.jsonl`, validated output in `data/enrichment/entities.jsonl` (`--limit N`, `--dry-run`, `--source ID`, `--all-items`, `--env-file`). Needs `OPENROUTER_API_KEY` in `.env`
+- `uv run python -m pnews.graph`: build the item/source/entity graph (PyG `HeteroData` in `data/graphs/`), statistics in `report/tables/`, figures in `report/figures/`, GEXF for Gephi in `data/graphs/`; settings in `config/graph.yml`
 
 More commands go here as they're built. Keep this list and the README in sync (see the rule below).
 

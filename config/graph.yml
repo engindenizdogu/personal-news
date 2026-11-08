@@ -1,0 +1,7 @@
+# Graph builder settings (pnews.graph).
+version: v0              # used in output file names: data/graphs/graph_<version>.pt
+seed: 626                # layout seed for the network figure (the only random step)
+
+# Keep an entity only if at least this many items mention it. 1 keeps everything;
+# 2 drops entities that connect to a single item (dead ends for message passing).
+min_entity_items: 1

@@ -1,0 +1,8 @@
+# Entity aliases, applied in code after LLM extraction (pnews.enrich).
+# canonical name: [aliases]. Matching ignores case, periods and commas,
+# so "U.S." and "us" both match "US". Add entries as they show up in the data.
+# Changing this file needs no new API calls: entities are re-normalized from the cache.
+aliases:
+  United States: [US, USA, United States of America, America]
+  United Kingdom: [UK, Britain, Great Britain]
+  European Union: [EU]

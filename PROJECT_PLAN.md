@@ -51,8 +51,8 @@ Today is Friday, November 6. Dates are Monday–Sunday weeks.
 - [x] Pick 5–10 feeds; check how many items each feed exposes. 8 feeds in `config/feeds.yml`; Hacker News and Business Insider dropped
 - [x] Fetcher → `data/items.jsonl` (`pnews.collect`). No separate backfill: history is what each feed exposes, filtered to items published since 2026-01-01 (`--since 2026`); Wayback backfill considered and not built
 - [x] Article text with trafilatura → `data/content.jsonl` (`pnews.content`): sample of 5+ items per source for the midterm graph
-- [ ] Enrichment prompt, JSON schema and validator: entities on the content sample (free-form tagging and post types moved to week 1)
-- [ ] Graph builder v0 and statistics (nodes, edges, degree distribution, a plot)
+- [x] Enrichment prompt, JSON schema and validator: entities on the content sample (free-form tagging and post types moved to week 1). 45 items, `z-ai/glm-5.3-flash` via OpenRouter, $0.016
+- [x] Graph builder v0 and statistics (nodes, edges, degree distribution, a plot): `pnews.graph`, `report/tables/graph_v0_stats.md`, `report/figures/graph_v0_*.png`
 - [x] Pipeline diagram (`report/midterm.md`)
 - [ ] Status note: next steps, where labels come from, baselines, metrics
 
@@ -60,7 +60,7 @@ Today is Friday, November 6. Dates are Monday–Sunday weeks.
 Deliverables required by the course:
 - [x] Pipeline diagram (LLM components, graph construction, graph model, evaluation)
 - [ ] Preliminary LLM-generated components (fetcher, enrichment extractor)
-- [ ] First version of the graph (partial is fine) with basic statistics
+- [x] First version of the graph (partial is fine) with basic statistics
 - [ ] Status note: next steps, label source, baselines, evaluation metrics
 
 ### Week 1: Nov 9 – Nov 15 (data and labels)
@@ -123,10 +123,10 @@ Deliverables required by the course:
 
 ## Ideas to explore
 - **Jev for topic assignment** ([TypeSafe AI](https://typesafe.ai/blog/introducing-system-one-models-and-jev)). A "System One" model that only returns values from a set of outputs defined in advance (up to 255 choices), with a calibrated probability for each. That fits step 3.2: assigning topics from the frozen list and post types from the closed set. Possible uses:
-  - Use Jev in place of Claude for topic and post-type assignment, or compare the two on a sample in `VALIDATION_LOG.md`.
+  - Use Jev in place of the OpenRouter LLM for topic and post-type assignment, or compare the two on a sample in `VALIDATION_LOG.md`.
   - Use its probabilities as `about` edge weights or as item features.
   
-  It can't generate free text, so it can't do the free-form tagging (3.1), likely not open-ended entity extraction, and not the digest note; those stay with Claude. Caveats: early access with a waitlist, and the claims in the post are self-reported. Request access early; don't put it on the critical path.
+  It can't generate free text, so it can't do the free-form tagging (3.1), likely not open-ended entity extraction, and not the digest note; those stay with the OpenRouter LLM. Caveats: early access with a waitlist, and the claims in the post are self-reported. Request access early; don't put it on the critical path.
 
 ## Open questions
 - Report due date: with the presentation on Dec 14, or later?
