@@ -38,7 +38,7 @@ Does graph structure improve relevance prediction over item text alone, using on
 ## Models and evaluation
 - **Task:** node classification of items, 3-class and binary ("more like this" vs. rest).
 - **Graph models:** GCN or GraphSAGE (baseline, required); HGT or TransformerConv with edge types (recommended). Attention weights for explanations.
-- **Non-graph baselines:** logistic regression and gradient-boosted trees on the same item features; label propagation.
+- **Non-graph baselines:** logistic regression, random forest and gradient-boosted trees on the same item features; label propagation.
 - **Metrics:** macro-F1 and PR-AUC (relevant items are rare). Report mean ± std over 5+ seeds.
 - **Ablations:** with and without entity, topic and similar-story edges.
 - **Leakage:** labels are human ratings. Item features never include the rating or anything derived from it. The topic list is built from item text only.
@@ -48,20 +48,21 @@ Today is Friday, November 6. Dates are Monday–Sunday weeks.
 
 ### Weekend setup: Sat Nov 7 – Sun Nov 8 (midterm prep)
 - [x] Repo setup: `git init`, `uv` project, `.gitignore`, folder layout (see `CLAUDE.md`)
-- [x] Pick 5–10 feeds; check how many items each feed exposes. 8 feeds in `config/feeds.yml`; Hacker News and Business Insider dropped
+- [x] Pick 5–10 feeds; check how many items each feed exposes. 9 feeds in `config/feeds.yml`; Hacker News and Business Insider dropped, HackerNoon added
 - [x] Fetcher → `data/items.jsonl` (`pnews.collect`). No separate backfill: history is what each feed exposes, filtered to items published since 2026-01-01 (`--since 2026`); Wayback backfill considered and not built
 - [x] Article text with trafilatura → `data/content.jsonl` (`pnews.content`): sample of 5+ items per source for the midterm graph
 - [x] Enrichment prompt, JSON schema and validator: entities on the content sample (free-form tagging and post types moved to week 1). 45 items, `z-ai/glm-5.3-flash` via OpenRouter, $0.016
 - [x] Graph builder v0 and statistics (nodes, edges, degree distribution, a plot): `pnews.graph`, `report/tables/graph_v0_stats.md`, `report/figures/graph_v0_*.png`
 - [x] Pipeline diagram (`report/midterm.md`)
-- [ ] Status note: next steps, where labels come from, baselines, metrics
+- [x] Graph statistics notebook: centrality, source homophily, chi-square tests (`notebooks/graph_stats.ipynb`)
+- [x] Status note: next steps, where labels come from, baselines, metrics (last slide of the midterm deck)
 
 ### Midterm presentation: Mon Nov 9
 Deliverables required by the course:
 - [x] Pipeline diagram (LLM components, graph construction, graph model, evaluation)
-- [ ] Preliminary LLM-generated components (fetcher, enrichment extractor)
+- [x] Preliminary LLM-generated components (fetcher, enrichment extractor)
 - [x] First version of the graph (partial is fine) with basic statistics
-- [ ] Status note: next steps, label source, baselines, evaluation metrics
+- [x] Status note: next steps, label source, baselines, evaluation metrics. Presented: scale to ~25 sources and ~1,000 items; manual labels in 3 classes; GCN/GraphSAGE and TransformerConv vs. random forest and gradient-boosted trees; macro-F1 and PR-AUC on a time-based split, mean ± std over seeds
 
 ### Week 1: Nov 9 – Nov 15 (data and labels)
 - [ ] Article text for all items (`pnews.content`); review coverage per source
@@ -75,7 +76,7 @@ Deliverables required by the course:
 
 ### Week 2: Nov 16 – Nov 22 (baselines and first graph model)
 - [ ] Time-based split
-- [ ] Logistic regression, gradient-boosted trees, label propagation
+- [ ] Logistic regression, random forest, gradient-boosted trees, label propagation
 - [ ] GCN / GraphSAGE; multi-seed runner
 - [ ] Ratings: target 300+ items
 
@@ -127,6 +128,8 @@ Deliverables required by the course:
   - Use its probabilities as `about` edge weights or as item features.
   
   It can't generate free text, so it can't do the free-form tagging (3.1), likely not open-ended entity extraction, and not the digest note; those stay with the OpenRouter LLM. Caveats: early access with a waitlist, and the claims in the post are self-reported. Request access early; don't put it on the critical path.
+
+- **Persona labelling (suggestion, not the plan).** To speed up rating, an LLM with a written reader persona could label items. Manual labels stay the default. If used: a different model family from enrichment, a hand-labelled random sample with agreement reported (Cohen's κ), and the graph-vs-baseline result checked on the human-labelled subset. The claim would change to "a fixed persona's relevance", not a real reader's.
 
 ## Open questions
 - Report due date: with the presentation on Dec 14, or later?

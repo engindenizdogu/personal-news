@@ -34,6 +34,7 @@ VALIDATION_LOG.md
 - `uv run python -m pnews.content`: fetch each item's page, extract text with trafilatura, append to `data/content.jsonl` keyed by `item_id` (`--limit N`, `--per-source N`, `--source ID`, `--retry-failed`, `--no-html`); failed items get a row with `text: null`; only sources in `config/feeds.yml`
 - `uv run python -m pnews.enrich`: extract entities with the LLM for items that have a content record; raw answers cached in `data/enrichment/cache.jsonl`, validated output in `data/enrichment/entities.jsonl` (`--limit N`, `--dry-run`, `--source ID`, `--all-items`, `--env-file`). Needs `OPENROUTER_API_KEY` in `.env`
 - `uv run python -m pnews.graph`: build the item/source/entity graph (PyG `HeteroData` in `data/graphs/`), statistics in `report/tables/`, figures in `report/figures/`, GEXF for Gephi in `data/graphs/`; settings in `config/graph.yml`
+- `uv run --with nbconvert jupyter nbconvert --to notebook --execute --inplace notebooks/graph_stats.ipynb`: rerun the graph statistics notebook (centrality, homophily, chi-square tests) on the current data
 
 More commands go here as they're built. Keep this list and the README in sync (see the rule below).
 

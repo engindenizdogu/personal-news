@@ -69,3 +69,8 @@ uv run python -m pnews.graph
 - Outputs: `data/graphs/graph_<version>.pt` (PyG `HeteroData`, git-ignored) and `graph_<version>_nodes.json` (node index -> id); statistics in `report/tables/graph_<version>_stats.md` and `.json`; figures `report/figures/graph_<version>_degree.png` and `graph_<version>_network.png`
 - Interactive browsing: `data/graphs/graph_<version>.gexf` (git-ignored) opens in [Gephi](https://gephi.org) or [Gephi Lite](https://gephi.org/gephi-lite/) in the browser. Every node and edge is included. Node attributes: `node_type`, `label` (item title, source or entity name), `source_id`, `entity_type`, `published_at`, `url`, `degree`; edges carry `relation` (`from`/`mentions`). Nodes come colored by type, sized by degree, with a seeded starting layout
 - Deterministic: same inputs and config give the same graph and figures
+- More statistics: `notebooks/graph_stats.ipynb` rebuilds the graph from the same inputs and adds edge densities, degree distributions, components and path lengths, the item–item projection, centrality (degree, betweenness, closeness, eigenvector, PageRank), a source-homophily permutation test, and chi-square tests (source × entity type, entity type × shared). Open it with the project's `.venv` kernel, or run it headless:
+
+  ```bash
+  uv run --with nbconvert jupyter nbconvert --to notebook --execute --inplace notebooks/graph_stats.ipynb
+  ```

@@ -13,6 +13,7 @@ Runtime prompts used by the pipeline (e.g. `enrich_v1.md`) are separate files in
 | Content extractor | `src/pnews/content.py`, `tests/test_content.py` | LLM-generated | trafilatura on each item's link; not yet run by the author |
 | Entity extraction (enrich) | `src/pnews/enrich.py`, `tests/test_enrich.py`, `config/enrich.yml`, `config/entity_aliases.yml` | LLM-generated | Runtime prompt `prompts/entities_v1.md` also LLM-drafted; entity types chosen by the author |
 | Graph builder (graph) | `src/pnews/graph.py`, `tests/test_graph.py`, `config/graph.yml` | LLM-generated | v0: items, sources, entities; statistics, two figures, GEXF export |
+| Graph statistics notebook | `notebooks/graph_stats.ipynb` | LLM-generated | Counts, degrees, connectivity, centrality, homophily permutation test, chi-square tests; statistics chosen by the LLM from the author's list |
 
 Origin is one of: LLM-generated, handwritten, mixed.
 
@@ -153,3 +154,34 @@ Origin is one of: LLM-generated, handwritten, mixed.
 - **Prompt (verbatim):**
   > Create a gexf file too. I'll upload it to gephi lite.
 - **Files changed:** `src/pnews/graph.py` (`to_networkx`, `export_gexf`; item url in node table), `tests/test_graph.py` (round-trip test), `pyproject.toml`/`uv.lock` (`scipy`), `README.md`, `CLAUDE.md`, `VALIDATION_LOG.md`
+
+### 2026-11-09 · Graph statistics notebook
+- **Model:** Claude Opus 5.5 (`claude-opus-5-5`) via Claude Code
+- **Prompt (verbatim):**
+  > We need better graph statistics. Create a notebook (notebooks folder), include additional stats like number of edges, centarality, chi square etc.
+- **Choices made by the model (not specified in the prompt):** the chi-square tests are source × entity type and entity type × shared by 2+ items, counted on distinct (source, entity) pairs and distinct entities; within-source linking is tested with a permutation test, because item pairs are not independent
+- **Files produced/changed:** `notebooks/graph_stats.ipynb` (new, executed), `pyproject.toml`/`uv.lock` (`ipykernel` dev dependency), `README.md`, `CLAUDE.md`, `VALIDATION_LOG.md`
+
+### 2026-11-09 · Midterm deck review, script and evaluation questions (no files changed)
+- **Model:** Claude Opus 5.5 (`claude-opus-5-5`) via Claude Code
+- **Prompts (verbatim):**
+  > What is degree in a graph?
+
+  > I've completed the presentation @"docs/Midterm Presentation_edogu.pptx" . Review it, what do you think?
+
+  > The most important thing is to add evaluation metrics. Other things you mentioned will be told in the presentation. I've uploaded a pdf version. Give me one line about evaluation metrics to add to the last slide.
+
+  > what is the difference between macro f1 and pr auc with regular versions/
+
+  > Give me a script for the presentation and I'll go over it. Agentic labelling might be a method I chose. I might give a 'persona' to an LLM to make labelling faster. The presentation is around 8-10 mins.
+
+  > About leakage, even if I manually label them I'll still see the article. How do recommender systems handle this?
+
+  > That's okay, the persona thing is a suggestion anyway, I might use manual labelling.
+- **Files changed:** none (answers, a deck review, an evaluation line for the last slide and a speaking script)
+
+### 2026-11-09 · Plan update after the midterm
+- **Model:** Claude Opus 5.5 (`claude-opus-5-5`) via Claude Code
+- **Prompt (verbatim):**
+  > update project plan and commit
+- **Files changed:** `PROJECT_PLAN.md` (midterm items ticked; status note summary; 9 feeds; random forest added to the baselines as on the last slide; persona labelling noted as an idea, manual labels stay the default), this file
